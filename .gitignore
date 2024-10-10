@@ -1,0 +1,4 @@
+mvenv/
+build/
+dist/
+*.spec

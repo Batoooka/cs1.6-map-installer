@@ -1,15 +1,14 @@
 import tkinter as tk
-import shutil
-import sys
 import os
+import sys
 import subprocess
+import shutil
 import json
 import requests
 from tkinter import messagebox, filedialog, ttk
-import customtkinter as ctk
 from PIL import Image, ImageTk
 
-VERSION = 1.4
+VERSION = 1.5.0
 # for fetch() & search()
 current_page = 1
 results_per_page = 50
@@ -31,8 +30,9 @@ afg_color = "#b2b2c0"
 fg_color = "#7b7b7e"
 
 # gui window
-root = ctk.CTk()
+root = tk.Tk()
 root.title("Map Installer")
+root.iconbitmap("icon.ico")
 root.configure(bg=bg_color)
 # postion the window in the mid of screen & window size
 WINDOW_WIDTH = 450
@@ -90,9 +90,19 @@ def settings_page():
 # settings window
 def show_settings():
     global game_folder_entry, exe_folder_entry, delete_after_extract_var,settings_window
-    settings_window = ctk.CTkToplevel(root)
+    settings_window = tk.Toplevel(root)
     # fix settings window on top of the main window
     settings_window.transient(root)
+    # postion the window in the mid of screen & window size
+    SWINDOW_WIDTH = 380
+    SWINDOW_HEIGHT = 500
+    display_width = settings_window.winfo_screenwidth()
+    display_hieght = settings_window.winfo_screenheight()
+
+    left = int(display_width / 2 - SWINDOW_WIDTH / 2)
+    top = int(display_hieght / 2 - SWINDOW_HEIGHT / 2)
+    settings_window.geometry(f"{SWINDOW_WIDTH}x{SWINDOW_HEIGHT}+{left}+{top}")
+
     settings_window.title("Settings")
     # make the window un resizable
     settings_window.resizable(False , False)
@@ -100,56 +110,51 @@ def show_settings():
     settings_window.bind("<Escape>", lambda event : settings_window.destroy())
     #ask for game folder path location
     game_folder_label = tk.Label(settings_window,
-                                width=50,
-                                height=3,
                                 anchor="center",
-                                bg="black",fg=bg_color,
-                                font= ("Arial",22),
+                                fg="black",
+                                background=afg_color,
+                                font= ("Arial",13),
                                 text="Game Folder (must end /cstrike):")
-    game_folder_label.pack(pady=20)
+    game_folder_label.pack(pady=10)
 
-    game_folder_entry = tk.Entry(settings_window,justify="center",width=45,font=("Arial",22))
-    game_folder_entry.pack(padx=10,pady=20,ipady=10)
+    game_folder_entry = tk.Entry(settings_window,justify="center",font=("Arial",14))
+    game_folder_entry.pack(padx=10,pady=10,ipady=4)
     game_folder_entry.insert(0, game_folder)
 
     game_folder_browse_button = tk.Button(settings_window,
-                                        font=("Arial",20),
-                                        width=10,
+                                        font=("Arial",14),
+                                        # width=10,
                                         text="Browse",
                                         command=browse_game_folder)
-    game_folder_browse_button.pack(pady=20)
+    game_folder_browse_button.pack(pady=10)
 
     #ask for Winrar.exe path location
     exe_folder_label = tk.Label(settings_window,
-                                width=50,
-                                height=3,
                                 anchor="center",
-                                bg="black",
-                                fg=bg_color,
-                                font= ("Arial",22),
+                                background=afg_color,
+                                fg="black",
+                                font= ("Arial",13),
                                 text="WinRAR Executable File (must end winrar.exe):")
     exe_folder_label.pack(pady=20)
 
-    exe_folder_entry = tk.Entry(settings_window ,justify="center",width=45,font=("Arial",22))
-    exe_folder_entry.pack(padx=10,pady=20,ipady=10)
+    exe_folder_entry = tk.Entry(settings_window ,justify="center",font=("Arial",14))
+    exe_folder_entry.pack(padx=10,pady=10,ipady=4)
     exe_folder_entry.insert(0, exe_folder)
 
     exe_folder_browse_button = tk.Button(settings_window,
-                                        font=("Arial",20),
-                                        width=10,
+                                        font=("Arial",12),
                                         text="Browse",
                                         command=browse_exe_folder)
-    exe_folder_browse_button.pack(pady=20)
+    exe_folder_browse_button.pack(pady=10)
     # ask if the user wanna delete the src map file after extract
     delete_after_extract_var = tk.BooleanVar()
     delete_after_extract_var.set(delete_after_extract)
-    delete_after_extract_checkbox = ctk.CTkCheckBox(settings_window,
-                                                    width=20,
-                                                    height=10,
-                                                    font=("Arial",15),
+    delete_after_extract_checkbox = tk.Checkbutton(settings_window,
+                                                    background=afg_color,
+                                                    font=("Arial",13),
                                                     text="Delete map source file after extracting",
                                                     variable=delete_after_extract_var)
-    delete_after_extract_checkbox.pack(pady=20)
+    delete_after_extract_checkbox.pack(pady=10)
 
     def save_and_close():
         global delete_after_extract
@@ -157,7 +162,7 @@ def show_settings():
         save_settings()
         settings_window.destroy()
 
-    tk.Button(settings_window,font=("Arial",20),width=10, text="Save", command=save_and_close).pack(pady=30)
+    tk.Button(settings_window,font=("Arial",14),width=10, text="Save", command=save_and_close).pack(pady=30)
 
 # cstrike folder path validation
 def browse_game_folder():
@@ -294,7 +299,7 @@ def download_map():
                                 response = requests.get(download_url, stream=True)
                                 if response.status_code == 200:
                                     # download progress bar
-                                    progress_window = ctk.CTkToplevel(root)
+                                    progress_window = tk.Toplevel(root)
                                     # fix progress window on top of the main window
                                     progress_window.transient(root)
                                     progress_window.title("Downloading")
@@ -303,19 +308,18 @@ def download_map():
                                     # bind to close the download window & force end to download proccess
                                     progress_window.bind("<Escape>", lambda event : progress_window.destroy())
                                     progress_label = tk.Label(progress_window,
-                                                            width=40,
-                                                            height=2,
+                                                            # width=40,
+                                                            # height=2,
                                                             anchor="center",
-                                                            bg=fg_color,
-                                                            fg=bg_color,
-                                                            font= ("Arial",22),
+                                                            fg="black",
+                                                            font= ("Arial",12),
                                                             text="Downloading file, please wait...")
                                     progress_label.pack()
                                     progress_bar = ttk.Progressbar(progress_window,
                                                                 orient="horizontal",
-                                                                length=500,
+                                                                length=300,
                                                                 mode="determinate")
-                                    progress_bar.pack(pady=10,ipady=15)
+                                    progress_bar.pack(pady=10)
                                     total_length = int(response.headers.get('content-length'))
                                     downloaded = 0
                                     # download the map
@@ -334,7 +338,7 @@ def download_map():
                                         if messagebox.askyesno("Extract File", f"Do you want to extract the {full_file_path} file?"):
                                             extract_map(full_file_path)
                                     else:
-                                        messagebox.showerror("Error","Please select the game folder and WinRAR executable folder.")
+                                        messagebox.showerror("Error","Please select the game folder and WinRAR executable folder to extract the map.")
                                 else:
                                     raise Exception("Failed to download file.")
                             except Exception as e:
@@ -472,7 +476,7 @@ def extract_map(full_file_path):
             messagebox.showerror("Error",
             f"Error removing {temp_dir} or {full_file_path}: {e}.either temp folder doesn't exist or please delete {temp_dir} folder in file location or delete {full_file_path} manually")
     else:
-        messagebox.showerror("Error", "Please select the game folder and WinRAR executable folder.")
+        messagebox.showerror("Error", "Please select the game folder and WinRAR executable folder to extract the map.")
 # next button command to show the next loaded maps in listbox
 def next_page():
     global current_page
@@ -490,46 +494,47 @@ options_frame = tk.Frame(root,bg=bg_color,background=bg_color)
 options_frame.pack(padx=5)
 options_frame.pack_propagate(False)
 # options_frame.configure(width=350,height=35)
-options_frame.configure(width=720,height=70)
+options_frame.configure(width=350,height=35)
 
-download_button= tk.Button(options_frame, text="download",font=("Arial",26),bg="white",
+download_button= tk.Button(options_frame, text="download",font=("Arial",13),bg="white",
                         bd=0,fg=fg_color,activeforeground=fg_color,
                         command=lambda:switch(indicator=download_indicator,
                                             page=download_page))
-download_button.place(x=90,y=0,width=250)
+download_button.place(x=20,y=0,width=100)
 
 download_indicator= tk.Label(options_frame,background="white",bg=fg_color)
-download_indicator.place(x=120 ,y=60 ,width=185, height=5)
+download_indicator.place(x=24 ,y=30 ,width=90, height=2)
 
-extract_button= tk.Button(options_frame, text="extract",font=("Arial",26),bg="white",
+extract_button= tk.Button(options_frame, text="extract",font=("Arial",13),bg="white",
                         bd=0,fg=fg_color,activeforeground=fg_color,
                         command=lambda:switch(indicator=extract_indicator,
                                             page=extract_page))
 
-extract_button.place(x=400,y=0,width=250)
+extract_button.place(x=224,y=0,width=100)
 
 extract_indicator= tk.Label(options_frame,background="white")
-extract_indicator.place(x=435 ,y=60 ,width=175, height=5)
+extract_indicator.place(x=235 ,y=30 ,width=75, height=2)
 
 #main frame
 main_frame = tk.Frame(root,bg=fg_color)
 main_frame.pack(expand=True ,fill="both",pady=5,padx=5)
 
-icon=Image.open(resource_path("assets\\settings.ico")).resize((100,100))
+# icon=Image.open(resource_path("assets\\settings.ico")).resize((100,100))
+icon=Image.open(resource_path("assets\\settings.ico")).resize((50,50))
 setting_icon = ImageTk.PhotoImage(icon)
 
 setting_button = tk.Button(
     root,
+    width=30,
+    height=30,
     image=setting_icon,
-    width=50,
-    height=50,
     bg=fg_color,
     activebackground=afg_color,
     bd=0,
     highlightthickness=0,
     command=lambda: settings_page()
     )
-setting_button.place(relx=0.9,rely=0.09)
+setting_button.place(relx=0.87,rely=0.09)
 setting_button.lift()
 
 # landing & download page
@@ -539,52 +544,68 @@ def download_page():
     download_frame.pack(expand=True ,fill="both")
 
     tk.Label(download_frame,
-            width=50,
-            height=1,
             anchor="s",
             bg=fg_color,
             fg="black",
             text="Search for map:",
-            font=("Arial",22)
-            ).pack(pady=25)
-    search_entry = tk.Entry(download_frame,justify="center",width=30,font=("Arial",22))
-    search_entry.pack(pady=15,ipadx=10,ipady=10)
+            font=("Arial",16)
+            ).pack(pady=10)
+    search_entry = tk.Entry(download_frame,justify="center",font=("Arial",13))
+    search_entry.pack(pady=10,ipadx=14,ipady=3)
+
+    search_entry.focus()
+    search_entry.bind("<Return>", lambda event : search_maps())
 
     search_button = tk.Button(download_frame,
-                            width=10,
+                            # width=10,
                             text="Search",
-                            font=("Arial",20),
+                            font=("Arial",13),
                             activeforeground=afg_color,
                             command=search_maps)
-    search_button.pack(pady=20)
+    search_button.pack(pady=10)
 
-    listbox = tk.Listbox(download_frame, width=35, height=15,justify="center",font=("Arial",24))
-    listbox.pack(pady=20)
+    listbox = tk.Listbox(
+        download_frame,
+        width=25,
+        height=14,
+        justify="center",
+        font=("Arial",13)
+    )
+    listbox.pack(pady=10)
 
     download_button = tk.Button(download_frame,
-                                font=("Arial",20),
-                                width=10, text="Download",
+                                font=("Arial",13),
+                                # width=10,
+                                text="Download",
                                 activeforeground=afg_color,
                                 command=download_map)
-    download_button.pack(pady=30)
+    download_button.pack(pady=10)
 
     pagination_frame = tk.Frame(download_frame,bg=fg_color)
-    pagination_frame.pack(pady=20)
+    pagination_frame.pack(pady=10)
 
     prev_button = tk.Button(pagination_frame,
-                            font=("Arial",20),
-                            width=10,
+                            font=("Arial",13),
+                            # width=10,
                             text="Previous",
                             activeforeground=afg_color,
                             command=prev_page)
     prev_button.pack(side=tk.LEFT, padx=10)
 
     next_button = tk.Button(pagination_frame,
-                            font=("Arial",20),
-                            width=10, text="  Next  ",
+                            font=("Arial",13),
+                            
+                            text="  Next  ",
                             activeforeground=afg_color,
                             command=next_page)
     next_button.pack(side=tk.RIGHT, padx=10)
+    
+    abd_label = tk.Label(
+        download_frame,
+        text="by ao | aka Batooka",
+        font=("Arial",9),fg='black',bg=fg_color)
+    abd_label.place(relx=0.74,rely=0.963)
+
 # extract page
 def extract_page():
     global file_entry
@@ -592,38 +613,38 @@ def extract_page():
     extract_frame.pack(expand=True ,fill="both")
 
     file_label = tk.Label(extract_frame,
-                        width=50,
-                        height=3,
+                        # width=50,
+                        # height=3,
                         anchor="s",
                         bg=fg_color,
                         fg="black",
-                        font= ("Arial",22),
+                        font= ("Arial",13),
                         text="Extract source map to game folder\nSelect Map/Maps Source files (Must end zip/rar/7z):")
-    file_label.pack(pady=70)
-    file_entry = tk.Entry(extract_frame,justify="center",width=40,font=("Arial",22))
-    file_entry.pack(pady=15,ipadx=10,ipady=10,padx=10)
+    file_label.pack(pady=45)
+    file_entry = tk.Entry(extract_frame,justify="center",font=("Arial",14))
+    file_entry.pack(pady=10,ipadx=10,ipady=3,padx=10)
     file_browse_button = tk.Button(extract_frame,
-                                font=("Arial",20),
-                                width=10,
+                                font=("Arial",13),
+                                # width=10,
                                 text="Browse",
                                 activeforeground=afg_color,
                                 command=browse_file)
-    file_browse_button.pack(pady=15)
+    file_browse_button.pack(pady=10)
 
     indicator= tk.Label(extract_frame,background="white")
-    indicator.place(x=140,y=550 ,width=600, height=5)
+    indicator.place(x=20,y=270,height=3,width=400)
 
     info_label = tk.Label(
         extract_frame,
-        text="Counter-Strike 1.6 map installer v1.4.1\nfor info read 'map_installer_get_started.txt'",
-        font=("Arial",24),fg='black',bg=fg_color)
+        text="Counter-Strike 1.6 map installer v1.5.0\nfor info read 'map_installer_get_started.txt'",
+        font=("Arial",13),fg='black',bg=fg_color)
     info_label.place(relx=0.16,rely=0.60)
 
     abd_label = tk.Label(
         extract_frame,
         text="by ao | aka Batooka",
-        font=("Arial",16),fg='black',bg=fg_color)
-    abd_label.place(relx=0.76,rely=0.963)
+        font=("Arial",9),fg='black',bg=fg_color)
+    abd_label.place(relx=0.74,rely=0.963)
 
 if __name__ == "__main__":
     download_page()

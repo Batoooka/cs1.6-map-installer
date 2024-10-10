@@ -1,0 +1,48 @@
+~~~~~~~~~~~~~ Counter-Strike 1.6 map installer v1.5.0 ~~~~~~~~~~~~~
+
+Download a specefic map or search by 2 letters ex.(de,cs,fy,ze).
+
+Recommended search query :
+-search for full correct map name.
+-search by 2 letters ex.(de,cs,fy,ze,etc..).
+
+After download is done it asks you if want to extract the map to game folder.
+
+============================================================
+
+In case you have already got the map src file 
+You can extract a map or multiple maps src files at once,
+Just go to extract page, select the maps you want to extract in.
+
+============================================================
+Settings 
+
+Make sure you added the game cstrike folder path & Winrar.exe path before doing any action.
+
+In addition to that there is an option to check if you want to delete the map
+source file after downloading & extracting (it delete the map.zip/.rar/.7z).
+
+make sure to give the exe the necessary Permissions.
+
+============================================================
+
+NOTES:
+In this version searching is limited due to api related stuff.
+(in case searching by two letters output same results) while if u search for full map name it's fine.
+
+UPCOMMING UPDATES :
+-improve searching.
+-try to get some server's fdl maps files pack.
+-add an extra info about searching maps.
+
+============================================================
+
+Contact:
+Feel free to report bugs & contact me at:
+discord : ao.3304
+
+source code :
+github : https://github.com/Batoooka
+
+============================================================
+cs 1.6 map installer by ao
